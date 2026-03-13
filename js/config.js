@@ -1,0 +1,1 @@
+window.PortfolioConfig={titles:["Lex's Portfolio","Java Developer","Photographer","Gamer"],photos:[{src:"pic/1.jpg",caption:"樱花"},{src:"pic/2.jpg",caption:"春日气息"},{src:"pic/3.jpg",caption:"落花椅"},{src:"pic/4.jpg",caption:"天地一隅"},{src:"pic/5.jpg",caption:"深蓝"},{src:"pic/6.jpg",caption:"银色穿梭"}]};

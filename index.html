@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow, noarchive">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%23000'/%3E%3Cpath d='M6 8 L14 16 L6 24' stroke='%230f0' stroke-width='3' fill='none'/%3E%3Crect x='16' y='20' width='8' height='4' fill='%230f0'/%3E%3C/svg%3E">
+    <title>Lex's Portfolio</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- 启动加载屏 -->
+    <div id="boot-screen">
+        <div id="boot-log"></div>
+    </div>
+
+    <canvas id="bg-canvas"></canvas>
+
+    <!-- 1. 终端容器 -->
+    <div id="terminal-container" class="terminal-window">
+        <div class="terminal-header">
+            <div class="terminal-controls">
+                <div class="control close"></div>
+                <div class="control minimize"></div>
+                <div class="control maximize"></div>
+            </div>
+        </div>
+
+        <div class="content-area">
+            <div class="command-line">
+                <span class="prompt">root@dev:~$</span>
+                <h1>./show_profile.sh --name "LEX"</h1>
+            </div>
+
+            <div class="output-container">
+                <span class="prompt" style="color: #666;">></span>
+                <span id="typewriter-text"></span><span class="cursor"></span>
+            </div>
+
+            <div class="icons-container">
+                <a href="#" id="btn-open-resume" class="icon-item" title="View Resume">
+                    <svg viewBox="0 0 24 24"><path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20M13,13V18H11V13H13M13,11V13H11V11H13M15,11V13H17V11H15M15,13V18H17V13H15M9,13V18H7V13H9M9,11V13H7V11H9Z" /></svg>
+                    <span class="icon-label">[PROGRAMMER]</span>
+                </a>
+                
+                <a href="#" id="btn-open-gallery" class="icon-item" title="View Portfolio">
+                    <svg viewBox="0 0 24 24"><path d="M4,4H7L9,2H15L17,4H20A2,2 0 0,1 22,6V18A2,2 0 0,1 20,20H4A2,2 0 0,1 2,18V6A2,2 0 0,1 4,4M12,7A5,5 0 0,0 7,12A5,5 0 0,0 12,17A5,5 0 0,0 17,12A5,5 0 0,0 12,7M12,9A3,3 0 0,1 15,12A3,3 0 0,1 12,15A3,3 0 0,1 9,12A3,3 0 0,1 12,9Z" /></svg>
+                    <span class="icon-label">[PHOTOGRAPHER]</span>
+                </a>
+
+                <a href="https://store.steampowered.com/" target="_blank" class="icon-item" title="View Steam Profile">
+                    <svg viewBox="0 0 24 24"><path d="M15,4A8,8 0 0,0 7,12A8,8 0 0,0 15,20A8,8 0 0,0 23,12A8,8 0 0,0 15,4M15,18A6,6 0 0,1 9,12A6,6 0 0,1 15,6A6,6 0 0,1 21,12A6,6 0 0,1 15,18M13.5,14.5A1.5,1.5 0 0,1 12,13A1.5,1.5 0 0,1 13.5,11.5A1.5,1.5 0 0,1 15,13A1.5,1.5 0 0,1 13.5,14.5M16.5,11.5A1.5,1.5 0 0,1 15,10A1.5,1.5 0 0,1 16.5,8.5A1.5,1.5 0 0,1 18,10A1.5,1.5 0 0,1 16.5,11.5M7,12H9V13.5H10.5V12H12.5V10.5H10.5V9H9V10.5H7V12Z" /></svg>
+                    <span class="icon-label">[GAMER]</span>
+                </a>
+            </div>
+            
+            <footer class="terminal-footer">
+                <span id="system-uptime">System Uptime: Calculating...</span>
+            </footer>
+        </div>
+    </div>
+
+    <!-- 2. 相册容器 (默认隐藏) -->
+    <div id="gallery-container" class="fullscreen-container hidden">
+        <header class="page-header">
+            <div class="page-title">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M22,16V4A2,2 0 0,0 20,2H8A2,2 0 0,0 6,4V16A2,2 0 0,0 8,18H20A2,2 0 0,0 22,16M11,12L13.03,14.71L16,11L20,16H8M2,6V20A2,2 0 0,0 4,22H18V20H4V6" /></svg>
+                <span>/home/user/portfolio/photography</span>
+            </div>
+            <a href="#" id="btn-close-gallery" class="back-btn">
+                <span>[ cd .. ]</span>
+            </a>
+        </header>
+        
+        <div class="photo-grid" id="photo-grid">
+            <!-- JavaScript 动态生成图片 -->
+        </div>
+    </div>
+
+    <!-- 3. 简历容器 (默认隐藏) -->
+    <div id="resume-container" class="fullscreen-container hidden">
+        <header class="page-header">
+            <div class="page-title">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20M13,13V18H11V13H13M13,11V13H11V11H13M15,11V13H17V11H15M15,13V18H17V13H15M9,13V18H7V13H9M9,11V13H7V11H9Z" /></svg>
+                <span>/home/user/resume.md</span>
+            </div>
+            <a href="#" id="btn-close-resume" class="back-btn">
+                <span>[ cd .. ]</span>
+            </a>
+        </header>
+
+        <article class="resume-content" id="resume-content">
+            <div class="resume-header">
+                <h1 class="resume-name">LEX</h1>
+                <div class="resume-info">
+                    <span>男</span><span>五年经验</span><span>在职</span><span>lexhuang97@gmail.com</span>
+                </div>
+            </div>
+
+            <div class="resume-section">
+                <h2 class="resume-section-title">教育背景</h2>
+                <div class="resume-item">
+                    <div class="resume-item-header">
+                        <span class="resume-item-title">武汉理工大学（211•双一流）</span>
+                        <span class="resume-item-subtitle">软件工程•本科</span>
+                        <span class="resume-item-date">2017.9 -- 2021.6</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="resume-section">
+                <h2 class="resume-section-title">专业技能</h2>
+                <ul class="resume-list">
+                    <li><strong>Java</strong>：熟悉线程池、AQS、并发编程、集合框架及设计模式等</li>
+                    <li><strong>JVM</strong>：熟悉内存管理、GC算法及调优技巧，了解CMS、G1垃圾回收器</li>
+                    <li><strong>数据库</strong>：熟悉MySQL事务、索引和锁机制等，对于分表迁移、SQL调优及索引优化有相关经验</li>
+                    <li><strong>缓存</strong>：熟悉Redis数据结构、持久化和过期策略，对于二级缓存、分布式锁有设计经验</li>
+                    <li><strong>消息队列</strong>：熟悉RabbitMQ/RocketMQ，对于消息可靠性、顺序消息等原理有所了解，对于消息堆积等问题有解决经验</li>
+                    <li><strong>分布式</strong>：熟悉分布式相关原理，具有分布式相关经验，对于分布式事务、分布式锁等有落地经验</li>
+                    <li><strong>框架</strong>：熟悉Spring/SpringBoot/MyBatis，具备源码阅读及封装通用业务组件的经历</li>
+                    <li><strong>系统设计</strong>：熟悉常用设计模式，并在项目中熟练使用工厂、策略及模板方法等设计模式提升代码质量，设计高性能可扩展架构</li>
+                </ul>
+            </div>
+
+            <div class="resume-section">
+                <h2 class="resume-section-title">工作经历</h2>
+                
+                <div class="resume-item">
+                    <div class="resume-item-header">
+                        <span class="resume-item-title">广东横琴祈盛科技有限公司（360奇富•珠海分部•港美股上市）</span>
+                        <span class="resume-item-date">2025.10 -- 至今</span>
+                    </div>
+                    <div class="resume-role">Java工程师 | 借条业务-数据平台部</div>
+                    <p style="margin-bottom: 0.5rem"><strong>核心工作职责：</strong>负责奇富借条『原360借条』To B端FocusPRO信贷平台-获客运营相关子系统开发与维护</p>
+                    <ul class="resume-list">
+                        <li>汉口银行交付项目-获客运营核心开发</li>
+                        <li>负责获客运营-速建工厂模块设计与开发</li>
+                    </ul>
+                    <p style="margin-top: 0.5rem; margin-bottom: 0.5rem"><strong>关键成果：</strong></p>
+                    <ul class="resume-list">
+                        <li>负责汉口银行交付项目中获客运营模块的开发与落地，作为核心成员全程参与项目跟踪，并在上线后承担维护职责，确保业务连续性</li>
+                    </ul>
+                </div>
+
+                <div class="resume-item">
+                    <div class="resume-item-header">
+                        <span class="resume-item-title">深圳市移卡科技有限公司（港股上市）</span>
+                        <span class="resume-item-date">2021.7 -- 2025.7</span>
+                    </div>
+                    <div class="resume-role">Java工程师 | 金融科技业务单元</div>
+                    <p style="margin-bottom: 0.5rem"><strong>核心工作职责：</strong>负责C端金融信贷业务开发，参与贷前（授信/营销活动/会员等系统）迭代及日常维护：涵盖外部流量对接（获客方向）、增值服务（会员权益服务）、客户底层数据支撑、授信流程维护</p>
+                </div>
+            </div>
+
+            <div class="resume-section">
+                <h2 class="resume-section-title">项目简要</h2>
+                
+                <div class="resume-item">
+                    <div class="resume-item-header">
+                        <!-- 添加了 class="resume-project-title" 以应用金色样式 -->
+                        <span class="resume-item-title resume-project-title">获客运营系统（FocusPRO信贷平台统一门户）</span>
+                        <span class="resume-item-date">2025.10 -- 2026.4</span>
+                    </div>
+                    <p style="margin-bottom: 0.5rem">FocusPRO信贷平台可以为银行等金融机构搭建一站式互联网信贷服务，获客运营系统是FocusPRO信贷<strong>业务申请流程核心引擎</strong>与<strong>统一门户</strong>，为C端客户（小程序）、B端客户经理（小程序）及业务管理团队<strong>提供全流程数字化信贷服务</strong>。系统覆盖客户进件、授信申请、用信支用、还款管理等信贷全生命周期，支持消费贷和经营贷双产品线</p>
+                    <p style="margin-bottom: 0.5rem"><strong>技术选型：</strong>Dubbo、SpringBoot、RocketMQ、MySQL、MongoDB、Redis、Apollo、Caffeine</p>
+                    <p style="margin-bottom: 0.5rem"><strong>个人职责：</strong></p>
+                    <ul class="resume-list">
+                        <li>负责C端小程序（授信申请、用信申请等）、B端小程序（展业二维码、订单管理、线下尽调等）、管理后台等多个子系统的功能开发与维护</li>
+                        <li>参与多个授信流程节点的开发与维护，如身份认证节点、人脸识别节点等</li>
+                        <li>参与消息通知中心开发与维护，负责多个消息场景的实现，如放款成功通知、授信结果通知、还款提醒等</li>
+                        <li>参与汉口银行交付项目，作为获客运营开发B角色，从0到1全程进行项目跟踪，并进行项目展业后期维护</li>
+                    </ul>
+                    <p style="margin-top: 0.5rem; margin-bottom: 0.5rem"><strong>项目亮点：</strong></p>
+                    <ul class="resume-list">
+                        <li><strong>速建工厂产品配置</strong>：通过速建工厂快速配置，实现"多种流程、多种产品"，最大化自定义授信业务，支持消费贷/经营贷快速上线</li>
+                        <li><strong>流程节点框架</strong>：基于模板方法+策略模式设计授信流程节点框架，定义统一的节点处理器接口，实现了流程节点的标准化处理，支持节点复用跳过、设备信息采集、反欺诈校验等通用能力，新增业务节点大幅降低开发复杂度</li>
+                        <li><strong>多机构适配器架构</strong>：业务逻辑封装在SDK层，接口调用下沉到机构仓库层，实现多机构底层差异屏蔽，支持多家金融机构快速接入</li>
+                        <li><strong>本地缓存框架</strong>：基于Caffeine+模板方法模式设计本地缓存框架，集成Spring生命周期自动加载，支持过期时间配置和定时刷新，可以快速对接多种业务缓存，接口响应速度提升50%以上</li>
+                        <li><strong>消息通知中心</strong>：采用工厂模式+模板方法模式实现多场景消息统一管理，支持场景动态路由+标准化流程，通过RocketMQ异步发送提升系统响应性能</li>
+                    </ul>
+                </div>
+
+                <div class="resume-item">
+                    <div class="resume-item-header">
+                        <!-- 添加了 class="resume-project-title" 以应用金色样式 -->
+                        <span class="resume-item-title resume-project-title">商e借（经营性贷款平台）</span>
+                        <span class="resume-item-date">2021.7 -- 2025.7</span>
+                    </div>
+                    <p style="margin-bottom: 0.5rem">面向商户的经营性贷款产品，以H5内嵌页和微信小程序为主要载体，为商户提供便捷的贷款相关服务，并为客户经理提供金融展业功能，系统覆盖信贷C端B端全生命周期</p>
+                    <p style="margin-bottom: 0.5rem"><strong>技术选型：</strong>Dubbo、SpringBoot、RabbitMQ、MySQL、Redis、Caffeine</p>
+                    <p style="margin-bottom: 0.5rem"><strong>个人职责：</strong></p>
+                    <ul class="resume-list">
+                        <li>作为核心开发，参与金融借贷平台建设，负责贷前渠道核心模块设计与开发</li>
+                        <li>负责会员增值服务核心模块设计与开发，实现订单支付、权益发放等全流程，运用抽象工厂对接多家权益商，通过MQ延时队列、分布式锁、事务消息等技术保障高并发下的数据一致性和系统稳定性</li>
+                        <li>负责客户协议服务重构与性能优化，通过设计模式拆分超万行臃肿代码，引入本地缓存和消息队列异步处理，提升系统可维护性和并发能力</li>
+                    </ul>
+                    <p style="margin-top: 0.5rem; margin-bottom: 0.5rem"><strong>项目亮点：</strong></p>
+                    <ul class="resume-list">
+                        <li><strong>多权益接入与订单处理</strong>：采用抽象工厂模式对接多家权益商，预生成订单号+分布式锁保障幂等，基于RocketMQ延时队列实现订单超时关闭，通过事务消息确保订单与权益发放的最终一致性</li>
+                        <li><strong>组件化文件服务</strong>：基于SpringBoot实现文件服务组件自动装配，支持压缩、路由、容灾等配置；通过Dubbo构建分布式文件管理体系，实现文件路径与业务解耦</li>
+                        <li><strong>协议签署重构</strong>：运用模板、适配器、工厂模式拆分超万行服务类，兼容多场景数据源，引入消息队列异步生成协议，结合死信队列保障任务不丢失，显著提升可维护性和并发能力</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="resume-section">
+                <h2 class="resume-section-title">个人总结</h2>
+                <ul class="resume-list">
+                    <li>对技术保持高度的敏感性和关注度，有很强的需求分析、团队协作能力</li>
+                    <li>对数据敏感，以业务为导向，多次牵头跨部门解决历史沉积问题</li>
+                    <li>敢于创新、乐于挑战难题，表现突出，多次绩效优秀并获评优秀员工</li>
+                    <li>情绪稳定，工作不易情绪化，抗压能力强</li>
+                </ul>
+            </div>
+            
+            <div class="resume-date">
+                Last updated: 2026年3月13日
+            </div>
+        </article>
+    </div>
+
+    <!-- Lightbox -->
+    <div class="lightbox" id="lightbox">
+        <span class="close-lightbox">&times;</span>
+        <img src="" alt="Full view" id="lightbox-img">
+        <div class="lightbox-caption" id="lightbox-caption"></div>
+    </div>
+
+    <!-- 配置文件 -->
+    <script src="js/config.js"></script>
+    <!-- 主逻辑 -->
+    <script src="js/app.js"></script>
+</body>
+</html>
