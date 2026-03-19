@@ -3,9 +3,8 @@
  * 集中管理网站数据，方便维护
  */
 (function() {
-    // 图片资源 CDN 前缀
-    // 如果需要本地调试，可以将此值改为空字符串 ''
     const CDN_PREFIX = 'https://cdn.jsdmirror.com/gh/lex-huang/lex-huang.github.io/';
+    // const CDN_PREFIX = '';
 
     window.PortfolioConfig = {
         // 终端打字机文案

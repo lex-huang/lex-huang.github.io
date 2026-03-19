@@ -11,9 +11,17 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://lex-huang.github.io/">
     <meta property="og:image" content="https://cdn.jsdmirror.com/gh/lex-huang/lex-huang.github.io/pic/1.jpg">
+    <meta property="og:site_name" content="Lex's Terminal Portfolio">
+    <meta property="og:locale" content="zh_CN">
+
+    <!-- Twitter Card Data -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Lex's Portfolio - Code & Capture & Create">
+    <meta name="twitter:description" content="Programmer, Photographer & Gamer. Welcome to my digital terminal.">
+    <meta name="twitter:image" content="https://cdn.jsdmirror.com/gh/lex-huang/lex-huang.github.io/pic/1.jpg">
 
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%23000'/%3E%3Cpath d='M6 8 L14 16 L6 24' stroke='%230f0' stroke-width='3' fill='none'/%3E%3Crect x='16' y='20' width='8' height='4' fill='%230f0'/%3E%3C/svg%3E">
-    <title>Terminal_Portfolio</title>
+    <title>Lex's Portfolio</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -38,7 +46,7 @@
         <div class="content-area">
             <div class="command-line">
                 <span class="prompt">root@dev:~$</span>
-                <h1>./show_profile.sh --name "LEX"</h1>
+                <h1>./show_profile.sh "LEX"</h1>
             </div>
 
             <div class="output-container">
@@ -72,7 +80,11 @@
     <!-- 2. 相册容器 (默认隐藏) -->
     <div id="gallery-container" class="fullscreen-container hidden">
         <!-- 回到顶部按钮 -->
-        <div id="back-to-top-gallery" class="back-to-top">↑</div>
+        <div id="back-to-top-gallery" class="back-to-top">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/>
+            </svg>
+        </div>
         <header class="page-header">
             <div class="page-title">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M22,16V4A2,2 0 0,0 20,2H8A2,2 0 0,0 6,4V16A2,2 0 0,0 8,18H20A2,2 0 0,0 22,16M11,12L13.03,14.71L16,11L20,16H8M2,6V20A2,2 0 0,0 4,22H18V20H4V6" /></svg>
@@ -91,7 +103,13 @@
     <!-- 3. 简历容器 (默认隐藏) -->
     <div id="resume-container" class="fullscreen-container hidden">
         <!-- 回到顶部按钮 -->
-        <div id="back-to-top-resume" class="back-to-top">↑</div>
+        <div id="back-to-top-resume" class="back-to-top">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/>
+            </svg>
+        </div>
+        <!-- 移动端目录切换按钮 -->
+        <div id="toc-toggle" class="toc-toggle">☰</div>
         <header class="page-header">
             <div class="page-title">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20M13,13V18H11V13H13M13,11V13H11V11H13M15,11V13H17V11H15M15,13V18H17V13H15M9,13V18H7V13H9M9,11V13H7V11H9Z" /></svg>
@@ -235,6 +253,10 @@
     <!-- Lightbox -->
     <div class="lightbox" id="lightbox">
         <span class="close-lightbox">&times;</span>
+        <div class="lightbox-nav prev" id="lightbox-prev">&#10094;</div>
+        <div class="lightbox-nav next" id="lightbox-next">&#10095;</div>
+        <div class="lightbox-loader" id="lightbox-loader"></div>
+        <div class="lightbox-error" id="lightbox-error">Image Load Failed</div>
         <img src="" alt="Full view" id="lightbox-img">
         <div class="lightbox-caption" id="lightbox-caption"></div>
     </div>
