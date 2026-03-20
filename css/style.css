@@ -34,23 +34,6 @@ body {
     -webkit-text-size-adjust: 100%;
 }
 
-#boot-screen {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 9999;
-    background-color: #000;
-    color: var(--text-color);
-    font-family: 'Courier New', monospace;
-    font-size: 14px;
-    line-height: 1.4;
-    padding: 20px;
-    overflow: hidden;
-    transition: opacity 0.5s ease;
-}
-
 #boot-log {
     width: 100%;
     height: 100%;
@@ -220,8 +203,7 @@ h1 {
     z-index: 20;
     background-color: rgba(0, 0, 0, 0);
     overflow-y: auto;
-    padding: 40px;
-    padding-bottom: max(40px, env(safe-area-inset-bottom) + 20px); 
+    padding: 40px 40px max(40px, env(safe-area-inset-bottom) + 20px);
     display: flex;
     flex-direction: column;
     opacity: 0; 
@@ -313,6 +295,9 @@ h1 {
     display: flex;
     min-height: 200px;
     animation: loading-pulse 1.5s infinite;
+    /* Performance Optimization for long lists */
+    content-visibility: auto;
+    contain-intrinsic-size: 200px;
 }
 
 .photo-item:has(img.loaded) {
@@ -733,6 +718,16 @@ strong { color: #fff; font-weight: bold; }
     text-shadow: 0 0 5px rgba(255,255,255,0.5);
 }
 
+.resume-toc a.active {
+    color: var(--primary-color);
+    font-weight: bold;
+    transform: scale(1.05);
+    text-shadow: 0 0 8px var(--primary-color);
+    border-left: 3px solid var(--primary-color);
+    padding-left: 5px;
+    background: rgba(0, 255, 0, 0.05);
+}
+
 /* TOC Toggle Button */
 .toc-toggle {
     position: fixed;
@@ -754,13 +749,26 @@ strong { color: #fff; font-weight: bold; }
     opacity: 0;
     pointer-events: none;
 }
-#resume-container.active ~ .toc-toggle,
-#resume-container .toc-toggle {
+.toc-toggle.visible {
     opacity: 1;
     pointer-events: auto;
 }
 
-.toc-toggle:active { transform: scale(0.95); background: rgba(255, 255, 255, 0.1); }
+@media (hover: hover) {
+    .toc-toggle:hover {
+        background: var(--primary-color);
+        color: #000;
+        box-shadow: 0 0 8px var(--primary-color);
+        border-color: var(--primary-color);
+    }
+}
+.toc-toggle:active { 
+    transform: scale(0.95);
+    background: var(--primary-color);
+    color: #000;
+    box-shadow: 0 0 8px var(--primary-color);
+    border-color: var(--primary-color);
+}
 
 @media (min-width: 1400px) {
     .resume-toc {
@@ -769,7 +777,9 @@ strong { color: #fff; font-weight: bold; }
         left: calc(50% + 480px);
         right: auto;
         transform: none;
-        width: 140px;
+        width: 140px; /* 恢复原宽度 */
+        min-width: auto; /* 重置移动端的 min-width */
+        max-width: none; /* 重置移动端的 max-width */
         height: auto;
         max-height: none;
         background: rgba(10, 10, 10, 0.6);
@@ -786,9 +796,19 @@ strong { color: #fff; font-weight: bold; }
     .resume-toc.active { transform: none; }
     .resume-toc a:hover { transform: scale(1.05); }
     .toc-toggle { display: none !important; }
-    
-    .back-to-top {
-        right: 80px;
+}
+
+@media (min-width: 1400px) {
+    #back-to-top-resume {
+        right: auto;
+        left: calc(50% + 480px);
+    }
+}
+
+@media (min-width: 1600px) {
+    #back-to-top-gallery {
+        right: auto;
+        left: calc(50% + 730px);
     }
 }
 

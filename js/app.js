@@ -32,8 +32,25 @@
             this.interval = 50;
             this.mouseX = -1000;
             this.mouseY = -1000;
+            this.isRampage = false;
             
             if (this.canvas) this.init();
+        }
+
+        setRampage(active) {
+            if (this.isRampage === active) return;
+            this.isRampage = active;
+            
+            if (active) {
+                this.fontSize = 24;
+                this.interval = 30;
+                this.chars = '01POIUYTREWQASDFGHJKLMNBVCXZ';
+            } else {
+                this.fontSize = 16;
+                this.interval = 50;
+                this.chars = '01';
+            }
+            this.resize();
         }
 
         init() {
@@ -64,7 +81,7 @@
         }
 
         draw() {
-            this.ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            this.ctx.fillStyle = this.isRampage ? 'rgba(0, 0, 0, 0.02)' : 'rgba(0, 0, 0, 0.05)';
             this.ctx.fillRect(0, 0, this.width, this.height);
             this.ctx.font = this.fontSize + 'px monospace';
             
@@ -80,14 +97,21 @@
                     this.ctx.shadowBlur = 5;
                     this.ctx.shadowColor = '#fff';
                 } else {
-                    this.ctx.fillStyle = Math.random() > 0.98 ? '#fff' : '#0f0';
-                    this.ctx.shadowBlur = 0;
+                    if (this.isRampage) {
+                        this.ctx.fillStyle = '#0f0';
+                        this.ctx.shadowBlur = 2;
+                        this.ctx.shadowColor = '#0f0';
+                    } else {
+                        this.ctx.fillStyle = Math.random() > 0.98 ? '#fff' : '#0f0';
+                        this.ctx.shadowBlur = 0;
+                    }
                 }
                 
                 this.ctx.fillText(text, x, y);
                 this.ctx.shadowBlur = 0;
 
-                if (this.drops[i] * this.fontSize > this.height && Math.random() > 0.975) {
+                const resetThreshold = this.isRampage ? 0.95 : 0.975;
+                if (this.drops[i] * this.fontSize > this.height && Math.random() > resetThreshold) {
                     this.drops[i] = 0;
                 }
                 this.drops[i]++;
@@ -211,7 +235,8 @@
         constructor() {
             this.bootScreen = $('#boot-screen');
             this.logContainer = $('#boot-log');
-            this.logs = [
+            
+            const defaultLogs = [
                 "Linux version 6.5.0-generic (buildd@lcy02-amd64-032)",
                 "Command line: BOOT_IMAGE=/boot/vmlinuz-6.5.0-generic root=UUID=1a2b3c4d ro quiet splash",
                 "BIOS-e820: [mem 0x0000000000000000-0x000000000009fbff] usable",
@@ -250,6 +275,8 @@
                 "Initializing terminal environment...",
                 "Booting..."
             ];
+
+            this.logs = defaultLogs;
             
             this.currentIndex = 0;
             this.minDuration = 3000;
@@ -367,15 +394,13 @@
             });
 
             this.content.appendChild(toc);
-            
-            // Toggle Button Logic (Mobile)
+
             if (this.toggleBtn) {
                 on(this.toggleBtn, 'click', (e) => {
                     e.stopPropagation();
                     toc.classList.toggle('active');
                 });
 
-                // Close when clicking outside
                 on(document, 'click', (e) => {
                     if (toc.classList.contains('active') && 
                         !toc.contains(e.target) && 
@@ -384,6 +409,32 @@
                     }
                 });
             }
+
+            const links = toc.querySelectorAll('a');
+            on(this.container, 'scroll', throttle(() => {
+                const scrollTop = this.container.scrollTop;
+
+                if (this.toggleBtn) {
+                    if (scrollTop > 400) this.toggleBtn.classList.add('visible');
+                    else this.toggleBtn.classList.remove('visible');
+                }
+
+                let currentId = '';
+                headings.forEach(h2 => {
+                    const sectionTop = h2.offsetTop;
+                    if (scrollTop >= sectionTop - 150) {
+                        currentId = h2.getAttribute('id');
+                    }
+                });
+
+                links.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === '#' + currentId) {
+                        link.classList.add('active');
+                    }
+                });
+
+            }, 100));
             
             on(toc, 'click', (e) => {
                 if (e.target.tagName === 'A') {
@@ -488,8 +539,20 @@
             this.lightbox.classList.add('active');
         }
 
+        preloadImage(index) {
+            if (index < 0 || index >= this.photos.length) return;
+            if (this.photos[index]._preloaded) return;
+            
+            const img = new Image();
+            img.src = this.photos[index].src;
+            this.photos[index]._preloaded = true;
+        }
+
         updateLightboxContent() {
             const photo = this.photos[this.currentPhotoIndex];
+            this.preloadImage(this.currentPhotoIndex + 1);
+            this.preloadImage(this.currentPhotoIndex - 1);
+
             if (this.lightboxLoader) this.lightboxLoader.classList.add('active');
             if (this.lightboxError) this.lightboxError.classList.remove('active');
             this.lightboxImg.style.opacity = '0.5';
@@ -577,10 +640,14 @@
             this.bootLoader = new BootLoader();
             this.resumeTOC = new ResumeTOC();
 
+            this.idleTimer = null;
+            this.IDLE_TIMEOUT = 120000; 
+
             this.init();
         }
 
         init() {
+            this.initIdleDetector();
             this.showEasterEgg();
 
             if (document.body.dataset.page === '404') {
@@ -628,7 +695,7 @@
 
         init404() {
              on(document, 'keydown', (e) => {
-                if (e.key === 'Enter') window.location.href = 'index.html';
+                if (e.key === 'Enter') window.location.href = 'https://lex-huang.github.io/';
              });
              new Typewriter('typewriter-404', "cd /home", 100, 500).start();
              new AmbientConsole('.command-line h1', ['ping host...', 'tracepath', 'diagnosing connection...', 'cat /var/log/syslog']);
@@ -709,6 +776,28 @@
                 });
                 this.switchTimer = null;
             }, 500);
+        }
+
+        initIdleDetector() {
+            if (window.innerWidth < 768 || !window.matchMedia('(hover: hover)').matches) return;
+
+            const resetIdle = throttle(() => {
+                if (this.matrixRain.isRampage) {
+                    this.matrixRain.setRampage(false);
+                }
+                clearTimeout(this.idleTimer);
+                this.idleTimer = setTimeout(() => {
+                    if (!document.hidden) {
+                        this.matrixRain.setRampage(true);
+                    }
+                }, this.IDLE_TIMEOUT);
+            }, 200);
+
+            ['mousemove', 'mousedown', 'keydown', 'touchstart', 'scroll'].forEach(evt => {
+                on(document, evt, resetIdle, { passive: true });
+            });
+
+            resetIdle();
         }
 
         bindEvents() {
