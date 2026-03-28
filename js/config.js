@@ -28,7 +28,10 @@
             { src: CDN_PREFIX + 'pic/4.jpg', caption: '天地一隅' },
             { src: CDN_PREFIX + 'pic/5.jpg', caption: '深蓝' },
             { src: CDN_PREFIX + 'pic/6.jpg', caption: '银色穿梭' },
-            { src: CDN_PREFIX + 'pic/7.jpg', caption: '终点落幕' }
+            { src: CDN_PREFIX + 'pic/7.jpg', caption: '终点落幕' },
+            { src: CDN_PREFIX + 'pic/8.jpg', caption: 'WORK-PLACE' },
+            { src: CDN_PREFIX + 'pic/9.jpg', caption: '热辣之城' },
+            { src: CDN_PREFIX + 'pic/10.jpg', caption: '天空，白云' }
         ]
     };
 })();
